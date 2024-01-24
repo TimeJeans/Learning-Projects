@@ -1,0 +1,120 @@
+#--Global variables--
+isGameOngoing = True
+gameBoard = ["-","-","-",
+             "-","-","-",
+             "-","-","-"]
+Winner = str(None)
+currentPlayer = "X"
+
+
+#tic-tac-toe game
+def changePlayer():
+  global currentPlayer
+  currentPlayer = "O" if currentPlayer == "X" else "X"
+  return
+  
+def handleTurn(Player):
+  position = input("Choose a position from 1-9: ")
+  while position not in ["1","2","3","4","5","6","7","8","9"]:
+    position = input("Invalid input. Choose a position from 1-9: ")
+  position = int(position) - 1
+  while gameBoard[position] != "-":
+    position = input("Someone is already there! Choose a position from 1-9: ")
+    position = int(position) - 1
+    
+    
+  gameBoard[position] = Player
+  displayBoard()
+
+def checkRows():
+  global isGameOngoing
+  global Winner
+  if gameBoard[0] == gameBoard[1] == gameBoard[2] != "-":
+    isGameOngoing = False
+    Winner = gameBoard[0]
+
+  if gameBoard[3] == gameBoard[4] == gameBoard[5] != "-":
+    isGameOngoing = False
+    Winner = gameBoard[3]
+
+  if gameBoard[6] == gameBoard[7] == gameBoard[8] != "-":
+    isGameOngoing = False
+    Winner = gameBoard[6]
+  return
+
+def checkColumns():
+  global isGameOngoing
+  global Winner
+  if gameBoard[0] == gameBoard[3] == gameBoard[6] != "-":
+    isGameOngoing = False
+    Winner = gameBoard[0]
+
+  if gameBoard[1] == gameBoard[4] == gameBoard[7] != "-":
+    isGameOngoing = False
+    Winner = gameBoard[1]
+
+  if gameBoard[2] == gameBoard[5] == gameBoard[8] != "-":
+    isGameOngoing = False
+    Winner = gameBoard[2]
+  return
+
+def checkDiagonals():
+  global isGameOngoing
+  global Winner
+  if gameBoard[0] == gameBoard[4] == gameBoard[8] != "-":
+    isGameOngoing = False
+    Winner = gameBoard[0]
+
+  if gameBoard[6] == gameBoard[4] == gameBoard[2] != "-":
+    isGameOngoing = False
+    Winner = gameBoard[6]
+  return
+
+def checkWin():
+  global Winner
+  checkRows()
+  checkColumns()
+  checkDiagonals()
+  if Winner == "X" or Winner == "O":
+    print(Winner, " wins!")
+  return  
+  
+def checkTie():
+  #check if all the positions are filled
+  global Winner
+  global isGameOngoing
+  if "-" not in gameBoard:
+    isGameOngoing = False
+    Winner = "Nobody"
+    print(Winner, " wins!")
+  return
+
+def checkGameOver():
+  checkWin()
+  checkTie()
+
+def displayBoard():
+  print(gameBoard[0] + " | " + gameBoard[1] + " | " + gameBoard[2])
+  print(gameBoard[3] + " | " + gameBoard[4] + " | " + gameBoard[5])
+  print(gameBoard[6] + " | " + gameBoard[7] + " | " + gameBoard[8])
+
+displayBoard()
+
+while isGameOngoing:
+
+  handleTurn(currentPlayer)
+  checkGameOver()
+  changePlayer()
+  
+#TASKS:
+
+#check if game is over - done
+#check for win - done
+#check for tie - done
+#check rows - done
+#check columns - done
+#check diagonals - done
+#change player - done
+#handle improper inputs - done
+#do not allow player to overwrite another player's input - done
+#display who won - done
