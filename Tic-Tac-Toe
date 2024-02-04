@@ -117,4 +117,9 @@ while isGameOngoing:
 #change player - done
 #handle improper inputs - done
 #do not allow player to overwrite another player's input - done
-#display who won - done
+#display who won - donw
+
+#potential expansion ideas:
+#add a bot that can handle turns using logic that mimics something intelligent and won't
+#as in it would prevent the player from easily winning. Perhaps a bot that can't be beat
+#unless the player plays a particular sequence that they must deduce?
