@@ -1,0 +1,56 @@
+import datetime
+import requests
+
+# Function to greet the user
+def greet():
+    print("Hello! How can I assist you today?")
+
+# Function to tell the current time and date
+def tell_time_date():
+    now = datetime.datetime.now()
+    current_time = now.strftime("%H:%M:%S")
+    current_date = now.strftime("%Y-%m-%d")
+    print(f"Current time: {current_time}")
+    print(f"Current date: {current_date}")
+
+# Function to get the weather information
+def get_weather(city):
+    api_key = "a031d3618f0114f1cf5554f23a9530b2" 
+    base_url = "http://api.openweathermap.org/data/2.5/weather?"
+    complete_url = base_url + "appid=" + api_key + "&q=" + city
+    response = requests.get(complete_url)
+    data = response.json()
+    
+    if data["cod"] != "404":
+        main = data["main"]
+        weather = data["weather"][0]
+        temperature = main["temp"] - 273.15  # Convert from Kelvin to Celsius
+        pressure = main["pressure"]
+        humidity = main["humidity"]
+        description = weather["description"]
+        print(f"Weather in {city}:")
+        print(f"Temperature: {temperature:.2f}°C")
+        print(f"Pressure: {pressure} hPa")
+        print(f"Humidity: {humidity}%")
+        print(f"Description: {description.capitalize()}")
+    else:
+        print("City not found.")
+
+# Main chatbot function
+def chatbot():
+    greet()
+    while True:
+        user_input = input("You: ").lower()
+        if "time" in user_input or "date" in user_input:
+            tell_time_date()
+        elif "weather" in user_input:
+            city = input("Enter city name: ")
+            get_weather(city)
+        elif "exit" in user_input:
+            print("Goodbye!")
+            break
+        else:
+            print("I'm sorry, I can only tell you the time, date, and weather. Type 'exit' to end the chat.")
+
+if __name__ == "__main__":
+    chatbot()
