@@ -17,7 +17,7 @@ def tell_time_date():
 def get_weather(city):
     api_key = "a031d3618f0114f1cf5554f23a9530b2" 
     base_url = "http://api.openweathermap.org/data/2.5/weather?"
-    complete_url = base_url + "&q=" + city + "appid=" api_key
+    complete_url = base_url + "&q=" + city + "appid=" + api_key
     response = requests.get(complete_url)
     data = response.json()
     
