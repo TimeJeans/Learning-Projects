@@ -1,0 +1,24 @@
+pip install requests beautifulsoup4
+
+import requests
+from bs4 import BeautifulSoup
+
+def get_wikipedia_headlines(search_term):
+    base_url = "https://en.wikipedia.org/wiki/"
+    complete_url = base_url + search_term.replace(" ", "_")
+    response = requests.get(complete_url)
+
+    if response.status_code != 200:
+        print(f"Failed to retrieve the page for '{search_term}'. Status code: {response.status_code}")
+        return
+
+    soup = BeautifulSoup(response.content, 'html.parser')
+    headlines = soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
+
+    print(f"Headlines for '{search_term}':\n")
+    for headline in headlines:
+        print(headline.get_text())
+
+if __name__ == "__main__":
+    search_term = input("Enter a word to search on Wikipedia: ")
+    get_wikipedia_headlines(search_term)
