@@ -1,0 +1,65 @@
+import usb.core
+import usb.util
+import time
+
+def find_usb_devices():
+    # Find all USB devices
+    devices = usb.core.find(find_all=True)
+    return devices
+
+def get_device_info(device):
+    # Get device information
+    info = {
+        'idVendor': hex(device.idVendor),
+        'idProduct': hex(device.idProduct),
+        'manufacturer': usb.util.get_string(device, device.iManufacturer),
+        'product': usb.util.get_string(device, device.iProduct),
+        'serial_number': usb.util.get_string(device, device.iSerialNumber)
+    }
+    return info
+
+def check_vulnerabilities(device):
+    vulnerabilities = []
+    #Check if the device allows writing data
+    try:
+        device.write(1, b'Test')
+        vulnerabilities.append('Device allows writing data.')
+    except usb.core.USBError:
+        vulnerabilities.append('Device does not allow writing data.')
+
+    # Check for known malicious vendor/product IDs, -->((work in progress, the below vendor and product are not real))<--
+    known_malicious_ids = {
+        '0x1234': 'Malicious Vendor',
+        '0x5678': 'Malicious Product'
+    }
+    if hex(device.idVendor) in known_malicious_ids or hex(device.idProduct) in known_malicious_ids:
+        vulnerabilities.append('Device has known malicious vendor/product ID.')
+
+# After going this far I realise that it is likely easier for someone to configure a list of authorised USBs and you can instead block 'unregistered' USBs from being able to read or write on your PC e.g. rubber duckies
+
+    return vulnerabilities
+
+def monitor_usb_devices():
+    print("Monitoring USB devices...")
+    initial_devices = set(find_usb_devices())
+    while True:
+        current_devices = set(find_usb_devices())
+        new_devices = current_devices - initial_devices
+        removed_devices = initial_devices - current_devices
+
+        for device in new_devices:
+            info = get_device_info(device)
+            print(f"New device connected: {info}")
+            vulnerabilities = check_vulnerabilities(device)
+            print(f"Vulnerabilities: {vulnerabilities}")
+
+        for device in removed_devices:
+            info = get_device_info(device)
+            print(f"Device disconnected: {info}")
+
+        initial_devices = current_devices
+        time.sleep(5)
+
+if __name__ == "__main__":
+    monitor_usb_devices()
+
